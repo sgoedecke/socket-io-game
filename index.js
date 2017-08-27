@@ -27,7 +27,10 @@ function isValidSquare(newSquare) {
 	// collision check
 	var hasCollided = false
 	// console.log("new square", newSquare)
-	Object.values(players).forEach((player) => {
+	Object.keys(players).forEach((key) => {
+		player = players[key]	
+	// })
+	// .forEach((player) => {
 		player.squares.forEach((square) => {
 			if (square.x == newSquare.x && square.y == newSquare.y) {
 				hasCollided = true
