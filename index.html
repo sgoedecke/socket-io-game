@@ -11,9 +11,10 @@
     </style>
   </head>
   <body>
-  <div id='playerCount'>    
-  </div>
-  <canvas id="game" width="500" height="500"></canvas>
+  <div id='playerCount'></div>
+  <div id='scores'></div>
+  <!-- Size is 10 greater than actual size -->
+  <canvas id="game" width="510" height="510"></canvas>
 
 
     <script src="/socket.io/socket.io.js"></script>
@@ -26,11 +27,22 @@
 
         socket.on('gameStateUpdate', function(gameState){
           ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          // set score info
           document.getElementById('playerCount').innerHTML = "Player count: " + Object.keys(gameState).length
+          var scores = ''
+          Object.values(gameState).forEach((value, index) => {
+            scores += "<p><span style='background-color: " + value.colour + ";'>Player " + String(index+1) + "</span>: " + value.score + "</p>"
+          })
+          document.getElementById('scores').innerHTML = scores
+
+          // draw players
           Object.keys(gameState).forEach((playerId) => {
             let player = gameState[playerId]
             ctx.fillStyle = player.colour;
-            ctx.fillRect(player.width, player.height, 10,10);
+            player.squares.forEach((square) => {
+              ctx.fillRect(square.x * 10, square.y * 10, 10,10);
+            })
           })
         });
 
