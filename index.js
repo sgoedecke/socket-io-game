@@ -95,7 +95,7 @@ io.on('connection', function(socket){
   console.log('User connected: ', socket.id)
   // start game if this is the first player
   if (Object.keys(players).length == 0) {
-  	gameInterval = setInterval(gameLoop, 30)
+  	gameInterval = setInterval(gameLoop, 80)
 	}
   // add player to players obj
   players[socket.id] = {
