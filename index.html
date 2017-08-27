@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket Game Blueprint</title>
+    <!-- <link rel="stylesheet" href='styles.css'> -->
+    <style>
+      #game {
+        background-color: lightgray;
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+  <div id='playerCount'>    
+  </div>
+  <canvas id="game" width="500" height="500"></canvas>
+
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+      $(function () {
+        var socket = io();
+        var canvas = document.getElementById('game');
+        var ctx = canvas.getContext('2d');
+
+        socket.on('gameStateUpdate', function(gameState){
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          document.getElementById('playerCount').innerHTML = "Player count: " + Object.keys(gameState).length
+          Object.keys(gameState).forEach((playerId) => {
+            let player = gameState[playerId]
+            ctx.fillStyle = player.colour;
+            ctx.fillRect(player.width, player.height, 10,10);
+          })
+        });
+
+        // key handling
+        $('html').keydown(function(e) {
+          console.log(e)
+          if (e.key == "ArrowDown") {
+            socket.emit('down');
+          } else if (e.key == "ArrowUp") {
+            socket.emit('up');
+          } else if (e.key == "ArrowLeft") {
+            socket.emit('left');
+          } else if (e.key == "ArrowRight") {
+            socket.emit('right');
+          }
+        })
+      });
+    </script>
+  </body>
+</html>
