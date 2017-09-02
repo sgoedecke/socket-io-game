@@ -2,84 +2,17 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var engine = require('./public/game')
 
 var gameInterval, updateInterval
 
 // TODO: extract below
 
-var players = {}
-
-const gameSize = 50; // 50-tile grid of possible locations
-
-function isValidSquare(newSquare) {
-  // bounds check
-  if (newSquare.x < 0 || newSquare.x > gameSize) {
-    return false
-  }
-  if (newSquare.y < 0 || newSquare.y > gameSize) {
-    return false
-  }
-  // collision check
-  var hasCollided = false
-  // console.log("new square", newSquare)
-  Object.keys(players).forEach((key) => {
-    player = players[key] 
-  // })
-  // .forEach((player) => {
-    player.squares.forEach((square) => {
-      if (square.x == newSquare.x && square.y == newSquare.y) {
-        hasCollided = true
-      }
-    })
-  })
-  if (hasCollided) { return false }
-  return true
-}
-
-function movePlayer(id) {
-
-  var player = players[id]
-  var lastSquare = player.squares[player.squares.length - 1]
-
-  var newSquare = {
-    x: lastSquare.x + player.accel.x,
-    y: lastSquare.y + player.accel.y
-  }
-  if (isValidSquare(newSquare)) {
-    // move the player and increment score
-    player.squares.push(newSquare)
-    if (player.squares.length % 30 == 0) { player.score++ }
-  } else {
-    // reset the player
-    player.squares = [player.squares[player.squares.length - 1]]
-    if (player.score >= 5) { player.score -= 5 }
-  }
-}
-
-function accelPlayer(id, x, y) {
-  players[id].accel.x = x
-  players[id].accel.y = y
-}
-
-// thanks SO
-function stringToColour(str) {
-  var hash = 0;
-  for (var i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  var colour = '#';
-  for (var i = 0; i < 3; i++) {
-    var value = (hash >> (i * 8)) & 0xFF;
-    colour += ('00' + value.toString(16)).substr(-2);
-  }
-  return colour;
-}
-
 function gameLoop() {
   // move everyone around
-  Object.keys(players).forEach((playerId) => {
-    let player = players[playerId]
-    movePlayer(playerId)
+  Object.keys(engine.players).forEach((playerId) => {
+    let player = engine.players[playerId]
+    engine.movePlayer(playerId)
   })
 }
 
@@ -87,24 +20,31 @@ function gameLoop() {
 // Main server code
 // ----------------------------------------
 
+// serve css and js
+app.use(express.static('public'))
+
 app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
 });
 
+
+
 function emitUpdates() {
   // tell everyone what's up
-  io.emit('gameStateUpdate', players);
+  io.emit('gameStateUpdate', engine.players);
 }
 
 io.on('connection', function(socket){
   console.log('User connected: ', socket.id)
+    console.log(engine)
+
   // start game if this is the first player
-  if (Object.keys(players).length == 0) {
+  if (Object.keys(engine.players).length == 0) {
   	gameInterval = setInterval(gameLoop, 25)
     updateInterval = setInterval(emitUpdates, 40)
 	}
-  // add player to players obj
-  players[socket.id] = {
+  // add player to engine.players obj
+  engine.players[socket.id] = {
   	accel: {
   		x: 1,
   		y: 0
@@ -112,17 +52,17 @@ io.on('connection', function(socket){
   	squares: [
   		{x: 0, y: 0}
   	],
-  	colour: stringToColour(socket.id),
+  	colour: engine.stringToColour(socket.id),
   	score: 0
   }
 
   // set socket listeners
 
   socket.on('disconnect', function() {
-  	delete players[socket.id]
-  	// end game if there are no players left
-  	if (Object.keys(players).length > 0) {
-    	io.emit('gameStateUpdate', players);
+  	delete engine.players[socket.id]
+  	// end game if there are no engine.players left
+  	if (Object.keys(engine.players).length > 0) {
+    	io.emit('gameStateUpdate', engine.players);
   	} else {
   		clearInterval(gameInterval)
       clearInterval(updateInterval)
@@ -133,31 +73,31 @@ io.on('connection', function(socket){
     if (!newState || Object.keys(newState).length == 0) {
       return
     }
-    oldState = newState
+    // oldState = newState
   }
 
   socket.on('up', function(msg){
     // set server-side game state to local game state
-    safeUpdate(players, msg)
-    accelPlayer(socket.id, 0, -1)
+    safeUpdate(engine.players, msg)
+    engine.accelPlayer(socket.id, 0, -1)
   });
 
   socket.on('down', function(msg) {
     // set server-side game state to local game state
-    safeUpdate(players, msg)
-    accelPlayer(socket.id, 0, 1)
+    safeUpdate(engine.players, msg)
+    engine.accelPlayer(socket.id, 0, 1)
   })
 
   socket.on('left', function(msg){
     // set server-side game state to local game state
-    safeUpdate(players, msg)
-    accelPlayer(socket.id, -1, 0)
+    safeUpdate(engine.players, msg)
+    engine.accelPlayer(socket.id, -1, 0)
   });
 
   socket.on('right', function(msg) {
     // set server-side game state to local game state
-    safeUpdate(players, msg)
-    accelPlayer(socket.id, 1, 0)
+    safeUpdate(engine.players, msg)
+    engine.accelPlayer(socket.id, 1, 0)
   })
 });
 
