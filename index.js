@@ -7,7 +7,7 @@ var gameInterval, updateInterval
 
 // TODO: extract below
 
-const players = {}
+var players = {}
 
 const gameSize = 50; // 50-tile grid of possible locations
 
@@ -130,18 +130,26 @@ io.on('connection', function(socket){
   })
 
   socket.on('up', function(msg){
+    // set server-side game state to local game state
+    players = msg
     accelPlayer(socket.id, 0, -1)
   });
 
-  socket.on('down', function() {
+  socket.on('down', function(msg) {
+    // set server-side game state to local game state
+    players = msg
     accelPlayer(socket.id, 0, 1)
   })
 
   socket.on('left', function(msg){
+    // set server-side game state to local game state
+    players = msg
     accelPlayer(socket.id, -1, 0)
   });
 
-  socket.on('right', function() {
+  socket.on('right', function(msg) {
+    // set server-side game state to local game state
+    players = msg
     accelPlayer(socket.id, 1, 0)
   })
 });

@@ -55,16 +55,16 @@
         $('html').keydown(function(e) {
           console.log(e)
           if (e.key == "ArrowDown") {
-            socket.emit('down');
+            socket.emit('down', players);
             accelPlayer(socket.id, 0, 1)
           } else if (e.key == "ArrowUp") {
-            socket.emit('up');
+            socket.emit('up', players);
             accelPlayer(socket.id, 0, -1)
           } else if (e.key == "ArrowLeft") {
-            socket.emit('left');
+            socket.emit('left', players);
             accelPlayer(socket.id, -1, 0)
           } else if (e.key == "ArrowRight") {
-            socket.emit('right');
+            socket.emit('right', players);
             accelPlayer(socket.id, 1, 0)
           }
         })
