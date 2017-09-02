@@ -1,6 +1,6 @@
 var players = {}
 
-const gameSize = 50; // 50-tile grid of possible locations
+const gameSize = 250; // 50-tile grid of possible locations
 
 function isValidSquare(newSquare) {
   // bounds check
