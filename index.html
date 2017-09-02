@@ -27,9 +27,16 @@
 
         socket.on('gameStateUpdate', updateGameState);
 
-        function updateGameState(gameState) {
-          players = gameState // update local state to match state on server
+          function safeUpdate(oldState, newState) {
+            if (!newState || Object.keys(newState).length == 0) {
+              return
+            }
+            oldState = newState
+          }
 
+        function updateGameState(gameState) {
+          // update local state to match state on server
+          safeUpdate(platers, gameState)
           // draw stuff
           ctx.clearRect(0, 0, canvas.width, canvas.height);
 
