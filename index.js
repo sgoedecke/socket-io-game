@@ -69,34 +69,19 @@ io.on('connection', function(socket){
   	}
   })
 
-  function safeUpdate(oldState, newState) {
-    if (!newState || Object.keys(newState).length == 0) {
-      return
-    }
-    // oldState = newState
-  }
-
   socket.on('up', function(msg){
-    // set server-side game state to local game state
-    safeUpdate(engine.players, msg)
     engine.accelPlayer(socket.id, 0, -1)
   });
 
   socket.on('down', function(msg) {
-    // set server-side game state to local game state
-    safeUpdate(engine.players, msg)
     engine.accelPlayer(socket.id, 0, 1)
   })
 
   socket.on('left', function(msg){
-    // set server-side game state to local game state
-    safeUpdate(engine.players, msg)
     engine.accelPlayer(socket.id, -1, 0)
   });
 
   socket.on('right', function(msg) {
-    // set server-side game state to local game state
-    safeUpdate(engine.players, msg)
     engine.accelPlayer(socket.id, 1, 0)
   })
 });
