@@ -44,6 +44,9 @@ function movePlayer(id) {
     player.y = newPosition.y
   } else {
     // don't move the player
+    // kill accel
+    player.accel.x = 0
+    player.accel.y = 0
   }
 }
 
