@@ -20,7 +20,7 @@
       var playerCount = Object.keys(players).length
       document.getElementById('playerCount').innerHTML = String(playerCount) + " pirate" + (playerCount > 1 ? 's' : '') + " on the salty seas"
       var scores = ''
-      Object.values(players).sort((a,b) => (a.score - b.score)).forEach((player, index) => {
+      Object.values(players).sort((a,b) => (b.score - a.score)).forEach((player, index) => {
         scores += "<p><span style='border-bottom: 1px solid " + player.colour + ";'>" + player.name + "</span> has " + player.score + " doubloons</p>"
       })
       document.getElementById('scores').innerHTML = scores
