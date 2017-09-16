@@ -1,9 +1,9 @@
 var players = {}
 
-const gameSize = 1000; // 1000x100, will be downscaled to 500x500 when we draw
+const gameSize = 2500; // will be downscaled 5x to 500x500 when we draw
 
-const playerSize = 50; // players are 50/50 squares (downscaled to 25x25)
-const maxAccel = 5
+const playerSize = 100; // (downscaled to 20x20)
+const maxAccel = 10
 
 function isValidPosition(newPosition, playerId) {
   // bounds check

@@ -43,11 +43,11 @@
           document.getElementById('scores').innerHTML = scores
 
           // draw players
-          // the game world is 500x500, but we're downscaling 10x to smooth accel out
+          // the game world is 500x500, but we're downscaling 5x to smooth accel out
           Object.keys(gameState).forEach((playerId) => {
             let player = gameState[playerId]
             ctx.fillStyle = player.colour;
-            ctx.fillRect(player.x/2, player.y/2, playerSize/2, playerSize/2);
+            ctx.fillRect(player.x/5, player.y/5, playerSize/5, playerSize/5);
           })
         }
 
