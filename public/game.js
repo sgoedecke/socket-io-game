@@ -1,9 +1,15 @@
 var players = {}
+var doubloon = {} // the thing everyone's chasing
 
 const gameSize = 2500; // will be downscaled 5x to 500x500 when we draw
 
 const playerSize = 100; // (downscaled to 20x20)
+const doubloonSize = 50
 const maxAccel = 10
+
+function checkCollision(obj1, obj2) {
+  return(Math.abs(obj1.x - obj2.x) <= playerSize && Math.abs(obj1.y - obj2.y) <= playerSize)
+}
 
 function isValidPosition(newPosition, playerId) {
   // bounds check
@@ -21,7 +27,7 @@ function isValidPosition(newPosition, playerId) {
     if (key == playerId) { return } // ignore current player in collision check
     player = players[key]
     // if the players overlap. hope this works
-    if (Math.abs(player.x - newPosition.x) <= playerSize && Math.abs(player.y - newPosition.y) <= playerSize) {
+    if (checkCollision(player, newPosition)) {
       hasCollided = true
       return // don't bother checking other stuff
     }
@@ -31,6 +37,19 @@ function isValidPosition(newPosition, playerId) {
   }
 
   return true
+}
+
+function shuffleDoubloon() {
+  var posX = Math.floor(Math.random() * Number(gameSize) - 100) + 10
+  var posY = Math.floor(Math.random() * Number(gameSize) - 100) + 10
+
+  while (!isValidPosition({ x: posX, y: posY }, '_doubloon')) {
+    posX = Math.floor(Math.random() * Number(gameSize) - 100) + 10
+    posY = Math.floor(Math.random() * Number(gameSize) - 100) + 10
+  }
+
+  doubloon.x = posX
+  doubloon.y = posY
 }
 
 function movePlayer(id) {
@@ -50,6 +69,11 @@ function movePlayer(id) {
     // kill accel
     player.accel.x = 0
     player.accel.y = 0
+  }
+
+  if (checkCollision(player, doubloon)) {
+    player.score += 1
+    shuffleDoubloon()
   }
 }
 
@@ -99,6 +123,8 @@ if (!this.navigator) { // super hacky thing to determine whether this is a node 
     movePlayer: movePlayer,
     playerSize: playerSize,
     gameSize: gameSize,
-    isValidPosition: isValidPosition
+    isValidPosition: isValidPosition,
+    doubloon: doubloon,
+    shuffleDoubloon: shuffleDoubloon
   }
 }

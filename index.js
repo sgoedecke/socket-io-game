@@ -6,6 +6,23 @@ var engine = require('./public/game')
 
 var gameInterval, updateInterval
 
+function pirateName() {
+  var names = [
+    'Blackbeard',
+    'Jimmy',
+    'Roger',
+    'Carlos',
+    'Juanita',
+    'Sophie',
+    'Boris',
+    'Jenny',
+    'Doris',
+    'Philippe',
+    'Jack'
+  ]
+  return names[Math.floor(Math.random()*names.length)]
+}
+
 // TODO: extract below
 
 function gameLoop() {
@@ -31,13 +48,14 @@ app.get('/', function(req, res){
 
 function emitUpdates() {
   // tell everyone what's up
-  io.emit('gameStateUpdate', engine.players);
+  io.emit('gameStateUpdate', { players: engine.players, doubloon: engine.doubloon });
 }
 
 io.on('connection', function(socket){
   console.log('User connected: ', socket.id)
   // start game if this is the first player
   if (Object.keys(engine.players).length == 0) {
+    engine.shuffleDoubloon()
   	gameInterval = setInterval(gameLoop, 25)
     updateInterval = setInterval(emitUpdates, 40)
 	}
@@ -59,7 +77,8 @@ io.on('connection', function(socket){
   	x: posX,
     y: posY,
   	colour: engine.stringToColour(socket.id),
-  	score: 0
+  	score: 0,
+    name: pirateName()
   }
 
   // set socket listeners

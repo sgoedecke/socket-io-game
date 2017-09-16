@@ -1,0 +1,20 @@
+body {
+  display: flex;
+  height: 95vh;
+  background-color: #f4f4f3;
+}
+
+#game {
+  background-color: lightblue;
+  border: 1px solid black;
+  margin: auto;
+}
+
+#playerCount {
+  position: fixed;
+}
+
+#scores {
+  position: fixed;
+  margin-top: 10px;
+}
