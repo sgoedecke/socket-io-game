@@ -1,33 +1,30 @@
 var players = {}
 
-const gameSize = 250; // 50-tile grid of possible locations
+const gameSize = 500; // 50-tile grid of possible locations
 
 const playerSize = 50; // players are 50/50 squares
 
-function isValidPosition(newPosition) {
+function isValidPosition(newPosition, playerId) {
   // bounds check
   if (newPosition.x < 0 || newPosition.x + playerSize > gameSize) {
-    console.log('ASD')
     return false
   }
   if (newPosition.y < 0 || newPosition.y + playerSize > gameSize) {
-    console.log('DSA')
     return false
   }
   // collision check
   var hasCollided = false
 
 
-  // Object.keys(players).forEach((key) => {
-  //   player = players[key]
-
-  //   // if the players overlap. hope this works
-  //   if (Math.abs(player.x - newPosition.x) < playerSize && Math.abs(player.y - newPosition.y) < playerSize) {
-  //     hasCollided = true
-  //     console.log('JJJJ')
-  //     return // don't bother checking other stuff
-  //   }
-  // })
+  Object.keys(players).forEach((key) => {
+    if (key == playerId) { return } // ignore current player in collision check
+    player = players[key]
+    // if the players overlap. hope this works
+    if (Math.abs(player.x - newPosition.x) < playerSize && Math.abs(player.y - newPosition.y) < playerSize) {
+      hasCollided = true
+      return // don't bother checking other stuff
+    }
+  })
   if (hasCollided) { return false }
   return true
 }
@@ -40,7 +37,7 @@ function movePlayer(id) {
     x: player.x + player.accel.x,
     y: player.y + player.accel.y
   }
-  if (isValidPosition(newPosition)) {
+  if (isValidPosition(newPosition, id)) {
     // move the player and increment score
     player.x = newPosition.x
     player.y = newPosition.y
