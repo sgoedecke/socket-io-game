@@ -54,14 +54,26 @@ function movePlayer(id) {
 }
 
 function accelPlayer(id, x, y) {
-  var currentX = players[id].accel.x
-  var currentY = players[id].accel.y
+  var player = players[id]
+  var currentX = player.accel.x
+  var currentY = player.accel.y
+
+  // set direction stuff - only used for UI
+  if (x > 0) {
+    player.direction = 'right'
+  } else if (x < 0) {
+    player.direction = 'left'
+  } else if (y > 0) {
+    player.direction = 'down'
+  } else if (y < 0) {
+    player.direction = 'up'
+  }
 
   if (Math.abs(currentX + x) < maxAccel) {
-    players[id].accel.x += x
+    player.accel.x += x
   }
   if (Math.abs(currentY + y) < maxAccel) {
-    players[id].accel.y += y
+    player.accel.y += y
   }
 }
 

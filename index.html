@@ -48,14 +48,20 @@
           // the game world is 500x500, but we're downscaling 5x to smooth accel out
           Object.keys(gameState).forEach((playerId) => {
             let player = gameState[playerId]
+            var direction
+
             ctx.fillStyle = player.colour;
             ctx.fillRect(player.x/5, player.y/5, playerSize/5, playerSize/5);
 
-            if (playerId != socket.id) { return }
+            if (playerId == socket.id) {
+              direction = localDirection
+            } else {
+              direction = player.direction
+            }
             // draw accel direction for current player
             ctx.fillStyle = 'black';
             let accelWidth = 3
-            switch(localDirection) {
+            switch(direction) {
               case 'up':
                 ctx.fillRect(player.x/5, player.y/5 - accelWidth, playerSize/5, accelWidth);
                 break
