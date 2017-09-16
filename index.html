@@ -43,10 +43,11 @@
           document.getElementById('scores').innerHTML = scores
 
           // draw players
+          // the game world is 500x500, but we're downscaling 10x to smooth accel out
           Object.keys(gameState).forEach((playerId) => {
             let player = gameState[playerId]
             ctx.fillStyle = player.colour;
-            ctx.fillRect(player.x, player.y, playerSize, playerSize);
+            ctx.fillRect(player.x/2, player.y/2, playerSize/2, playerSize/2);
           })
         }
 
@@ -74,12 +75,16 @@
             let player = players[playerId]
             movePlayer(playerId)
           })
+        }
 
+        function drawGame() {
           // draw stuff
           updateGameState(players)
+          requestAnimationFrame(drawGame)
         }
 
         setInterval(gameLoop, 25)
+        requestAnimationFrame(drawGame)
 
       });
     </script>

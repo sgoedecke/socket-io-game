@@ -1,8 +1,9 @@
 var players = {}
 
-const gameSize = 500; // 50-tile grid of possible locations
+const gameSize = 1000; // 1000x100, will be downscaled to 500x500 when we draw
 
-const playerSize = 50; // players are 50/50 squares
+const playerSize = 50; // players are 50/50 squares (downscaled to 25x25)
+const maxAccel = 5
 
 function isValidPosition(newPosition, playerId) {
   // bounds check
@@ -47,8 +48,15 @@ function movePlayer(id) {
 }
 
 function accelPlayer(id, x, y) {
-  players[id].accel.x = x
-  players[id].accel.y = y
+  var currentX = players[id].accel.x
+  var currentY = players[id].accel.y
+
+  if (currentX + x < maxAccel) {
+    players[id].accel.x += x
+  }
+  if (currentY + y < maxAccel) {
+    players[id].accel.y += y
+  }
 }
 
 // thanks SO
