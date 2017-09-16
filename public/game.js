@@ -27,10 +27,8 @@ function isValidPosition(newPosition, playerId) {
     }
   })
   if (hasCollided) {
-    console.log("RETURNING FALSE", playerId, players)
     return false
   }
-  console.log("RETURNING TRUE", playerId, players)
 
   return true
 }
@@ -59,10 +57,10 @@ function accelPlayer(id, x, y) {
   var currentX = players[id].accel.x
   var currentY = players[id].accel.y
 
-  if (currentX + x < maxAccel) {
+  if (Math.abs(currentX + x) < maxAccel) {
     players[id].accel.x += x
   }
-  if (currentY + y < maxAccel) {
+  if (Math.abs(currentY + y) < maxAccel) {
     players[id].accel.y += y
   }
 }

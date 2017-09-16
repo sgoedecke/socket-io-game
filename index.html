@@ -26,6 +26,8 @@
         var ctx = canvas.getContext('2d');
         // var players = {}; // this is magically defined in game.js
 
+        var localDirection // used to display accel direction
+
         socket.on('gameStateUpdate', updateGameState);
 
         function updateGameState(gameState) {
@@ -48,24 +50,45 @@
             let player = gameState[playerId]
             ctx.fillStyle = player.colour;
             ctx.fillRect(player.x/5, player.y/5, playerSize/5, playerSize/5);
+
+            if (playerId != socket.id) { return }
+            // draw accel direction for current player
+            ctx.fillStyle = 'black';
+            let accelWidth = 3
+            switch(localDirection) {
+              case 'up':
+                ctx.fillRect(player.x/5, player.y/5 - accelWidth, playerSize/5, accelWidth);
+                break
+              case 'down':
+                ctx.fillRect(player.x/5, player.y/5  + playerSize/5, playerSize/5, accelWidth);
+                break
+              case 'left':
+                ctx.fillRect(player.x/5 - accelWidth, player.y/5, accelWidth, playerSize/5);
+                break
+              case 'right':
+                ctx.fillRect(player.x/5 + playerSize/5, player.y/5, accelWidth, playerSize/5);
+            }
           })
         }
 
         // key handling
         $('html').keydown(function(e) {
-          console.log(players)
           if (e.key == "ArrowDown") {
             socket.emit('down', players);
             accelPlayer(socket.id, 0, 1)
+            localDirection = 'down'
           } else if (e.key == "ArrowUp") {
             socket.emit('up', players);
             accelPlayer(socket.id, 0, -1)
+            localDirection = 'up'
           } else if (e.key == "ArrowLeft") {
             socket.emit('left', players);
             accelPlayer(socket.id, -1, 0)
+            localDirection = 'left'
           } else if (e.key == "ArrowRight") {
             socket.emit('right', players);
             accelPlayer(socket.id, 1, 0)
+            localDirection = 'right'
           }
         })
 
