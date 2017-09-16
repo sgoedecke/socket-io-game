@@ -36,21 +36,28 @@ function emitUpdates() {
 
 io.on('connection', function(socket){
   console.log('User connected: ', socket.id)
-    console.log(engine)
-
   // start game if this is the first player
   if (Object.keys(engine.players).length == 0) {
   	gameInterval = setInterval(gameLoop, 25)
     updateInterval = setInterval(emitUpdates, 40)
 	}
+
+  // get open position
+  var posX = 0
+  var posY = 0
+  while (!engine.isValidPosition({ x: posX, y: posY }, socket.id)) {
+    posX = Math.floor(Math.random() * Number(engine.gameSize) - 100) + 10
+    posY = Math.floor(Math.random() * Number(engine.gameSize) - 100) + 10
+  }
+
   // add player to engine.players obj
   engine.players[socket.id] = {
   	accel: {
-  		x: 1,
+  		x: 0,
   		y: 0
   	},
-  	x: 0,
-    y: 0,
+  	x: posX,
+    y: posY,
   	colour: engine.stringToColour(socket.id),
   	score: 0
   }

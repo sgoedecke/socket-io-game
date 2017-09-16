@@ -21,12 +21,17 @@ function isValidPosition(newPosition, playerId) {
     if (key == playerId) { return } // ignore current player in collision check
     player = players[key]
     // if the players overlap. hope this works
-    if (Math.abs(player.x - newPosition.x) < playerSize && Math.abs(player.y - newPosition.y) < playerSize) {
+    if (Math.abs(player.x - newPosition.x) <= playerSize && Math.abs(player.y - newPosition.y) <= playerSize) {
       hasCollided = true
       return // don't bother checking other stuff
     }
   })
-  if (hasCollided) { return false }
+  if (hasCollided) {
+    console.log("RETURNING FALSE", playerId, players)
+    return false
+  }
+  console.log("RETURNING TRUE", playerId, players)
+
   return true
 }
 
@@ -82,6 +87,8 @@ if (!this.navigator) { // super hacky thing to determine whether this is a node 
     stringToColour: stringToColour,
     accelPlayer: accelPlayer,
     movePlayer: movePlayer,
-    playerSize: playerSize
+    playerSize: playerSize,
+    gameSize: gameSize,
+    isValidPosition: isValidPosition
   }
 }
