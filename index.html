@@ -47,9 +47,7 @@
           Object.keys(gameState).forEach((playerId) => {
             let player = gameState[playerId]
             ctx.fillStyle = player.colour;
-            player.squares.forEach((square) => {
-              ctx.fillRect(square.x * 2, square.y * 2, 2,2);
-            })
+            ctx.fillRect(player.x, player.y, playerSize, playerSize);
           })
         }
 

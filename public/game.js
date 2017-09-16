@@ -2,27 +2,32 @@ var players = {}
 
 const gameSize = 250; // 50-tile grid of possible locations
 
-function isValidSquare(newSquare) {
+const playerSize = 50; // players are 50/50 squares
+
+function isValidPosition(newPosition) {
   // bounds check
-  if (newSquare.x < 0 || newSquare.x > gameSize) {
+  if (newPosition.x < 0 || newPosition.x + playerSize > gameSize) {
+    console.log('ASD')
     return false
   }
-  if (newSquare.y < 0 || newSquare.y > gameSize) {
+  if (newPosition.y < 0 || newPosition.y + playerSize > gameSize) {
+    console.log('DSA')
     return false
   }
   // collision check
   var hasCollided = false
-  // console.log("new square", newSquare)
-  Object.keys(players).forEach((key) => {
-    player = players[key] 
+
+
+  // Object.keys(players).forEach((key) => {
+  //   player = players[key]
+
+  //   // if the players overlap. hope this works
+  //   if (Math.abs(player.x - newPosition.x) < playerSize && Math.abs(player.y - newPosition.y) < playerSize) {
+  //     hasCollided = true
+  //     console.log('JJJJ')
+  //     return // don't bother checking other stuff
+  //   }
   // })
-  // .forEach((player) => {
-    player.squares.forEach((square) => {
-      if (square.x == newSquare.x && square.y == newSquare.y) {
-        hasCollided = true
-      }
-    })
-  })
   if (hasCollided) { return false }
   return true
 }
@@ -30,20 +35,17 @@ function isValidSquare(newSquare) {
 function movePlayer(id) {
 
   var player = players[id]
-  var lastSquare = player.squares[player.squares.length - 1]
 
-  var newSquare = {
-    x: lastSquare.x + player.accel.x,
-    y: lastSquare.y + player.accel.y
+  var newPosition = {
+    x: player.x + player.accel.x,
+    y: player.y + player.accel.y
   }
-  if (isValidSquare(newSquare)) {
+  if (isValidPosition(newPosition)) {
     // move the player and increment score
-    player.squares.push(newSquare)
-    if (player.squares.length % 30 == 0) { player.score++ }
+    player.x = newPosition.x
+    player.y = newPosition.y
   } else {
-    // reset the player
-    player.squares = [player.squares[player.squares.length - 1]]
-    if (player.score >= 5) { player.score -= 5 }
+    // don't move the player
   }
 }
 
@@ -66,11 +68,12 @@ function stringToColour(str) {
   return colour;
 }
 
-if (!this.navigator) {
+if (!this.navigator) { // super hacky thing to determine whether this is a node module or inlined via script tag
   module.exports = {
     players: players,
     stringToColour: stringToColour,
     accelPlayer: accelPlayer,
-    movePlayer: movePlayer
+    movePlayer: movePlayer,
+    playerSize: playerSize
   }
 }

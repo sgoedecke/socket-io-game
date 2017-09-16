@@ -49,9 +49,8 @@ io.on('connection', function(socket){
   		x: 1,
   		y: 0
   	},
-  	squares: [
-  		{x: 0, y: 0}
-  	],
+  	x: 0,
+    y: 0,
   	colour: engine.stringToColour(socket.id),
   	score: 0
   }
