@@ -8,33 +8,7 @@
 
     socket.on('gameStateUpdate', updateGameState);
 
-    function updateGameState(gameState) {
-      // update local state to match state on server
-      players = gameState.players
-      doubloon = gameState.doubloon
-      // draw stuff
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // set score info
-      var playerCount = Object.keys(players).length
-      document.getElementById('playerCount').innerHTML = String(playerCount) + " pirate" + (playerCount > 1 ? 's' : '') + " on the salty seas"
-      var scores = ''
-      Object.values(players).sort((a,b) => (b.score - a.score)).forEach((player, index) => {
-        scores += "<p><span style='border-bottom: 1px solid " + player.colour + ";'>" + player.name + "</span> has " + player.score + " doubloons</p>"
-      })
-      document.getElementById('scores').innerHTML = scores
-
-      // draw doubloon
-      ctx.beginPath();
-      ctx.arc((gameState.doubloon.x + doubloonSize/2)/5, (gameState.doubloon.y + doubloonSize/2)/5, doubloonSize/5, 0, 2 * Math.PI, false);
-      ctx.fillStyle = 'gold';
-      ctx.fill();
-      ctx.lineWidth = 2;
-      ctx.strokeStyle = '#003300';
-      ctx.stroke();
-
-
+    function drawPlayers(players) {
       // draw players
       // the game world is 500x500, but we're downscaling 5x to smooth accel out
       Object.keys(players).forEach((playerId) => {
@@ -70,6 +44,35 @@
       })
     }
 
+    function updateGameState(gameState) {
+      // update local state to match state on server
+      players = gameState.players
+      doubloon = gameState.doubloon
+      // draw stuff
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // set score info
+      var playerCount = Object.keys(players).length
+      document.getElementById('playerCount').innerHTML = String(playerCount) + " pirate" + (playerCount > 1 ? 's' : '') + " on the salty seas"
+      var scores = ''
+      Object.values(players).sort((a,b) => (b.score - a.score)).forEach((player, index) => {
+        scores += "<p><span style='border-bottom: 1px solid " + player.colour + ";'>" + player.name + "</span> has " + player.score + " doubloons</p>"
+      })
+      document.getElementById('scores').innerHTML = scores
+
+      // draw doubloon
+      ctx.beginPath();
+      ctx.arc((doubloon.x + doubloonSize/2)/5, (doubloon.y + doubloonSize/2)/5, doubloonSize/5, 0, 2 * Math.PI, false);
+      ctx.fillStyle = 'gold';
+      ctx.fill();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = '#003300';
+      ctx.stroke();
+
+      drawPlayers(players)
+    }
+
     // key handling
     $('html').keydown(function(e) {
       if (e.key == "ArrowDown") {
@@ -103,6 +106,7 @@
 
     function drawGame() {
       // draw stuff
+      drawPlayers(players)
       requestAnimationFrame(drawGame)
     }
 
