@@ -65,4 +65,4 @@ So where's my game at now? It still looks ugly, but it's a functional vaguely-pi
 
 (4) Give the player some kind of immediate client-side feedback when they press a key
 
-
+Check out the interesting HN discussion of this article [here](https://news.ycombinator.com/item?id=15318530).
