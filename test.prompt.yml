@@ -1,0 +1,13 @@
+messages:
+  - role: system
+    content: Be as concise as possible
+  - role: user
+    content: 'Compare {{a}} and {{b}}, please'
+model: openai/gpt-4.1-nano
+testData:
+  - a: cats
+    b: dogs
+    expected: cats are better than dogs!
+  - a: gold
+    b: silver
+evaluators: []
